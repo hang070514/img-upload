@@ -66,6 +66,25 @@ router.post('/upload', upload.single('img'), async (ctx) => {
     }
 })
 
+router.post('/login', function(ctx){
+    console.log('ctx====', ctx.params, ctx.query)
+    console.log('ctx.request.body', ctx.request.body)
+    let params = ctx.request.body
+    if (params.username === 'admin' && params.password === 123456) {
+        ctx.body = {
+            code: 200,
+            data: {},
+            msg: '登录成功'
+        }
+    } else {
+        ctx.body = {
+            code: 400,
+            data: {},
+            msg: '用户名或者密码不正确'
+        }
+    }
+})
+
 app.use(koaBody())
     .use(router.routes())
     .use(router.allowedMethods())

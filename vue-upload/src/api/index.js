@@ -17,3 +17,7 @@ export const multipleUpload = (data) => {
         }
     )
 }
+
+export const login = (data) => {
+    return axios.post('/login', data)
+}
