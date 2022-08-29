@@ -5,6 +5,7 @@ const cors = require('koa2-cors')
 const serve = require('koa-static')
 const path = require('path')
 const multer = require('@koa/multer')
+const fs = require('fs')
 
 const router = new Router()
 const app = new Koa()
@@ -20,7 +21,8 @@ const storage = multer.diskStorage({
     // 用于确定文件夹中的文件名的确定
     filename: function (req, file, cb) {
         const fileFormat = (file.originalname).split('.')
-        const url = Date.now() + '.' + fileFormat[fileFormat.length - 1]
+        // const url = Date.now() + '.' + fileFormat[fileFormat.length - 1]
+        const url = file.originalname
         if (file.fieldname === 'avatar') {
              imgUrlList.push(`http://localhost:3001/${url}`)
         } else {
@@ -48,10 +50,12 @@ router.post(
         }
     ]),
     (req,res)=> {
-        // console.log('res', res.body)
-        // console.log('req', req)
+         // console.log('res', res.body)
+         // console.log('req', req)
         req.body = {
-            url: imgUrlList
+            status: 200,
+            url: imgUrlList,
+            message: '成功'
         }
     }
 )
@@ -85,6 +89,15 @@ router.post('/login', function(ctx){
     }
 })
 
+function readFile(filePath) {
+    fs.readdir(filePath, (err, files) => {
+        files.forEach((filename) => {
+            console.log('filename====', filename, path.join(filePath, filename))
+            fs.unlinkSync(path.join(filePath, filename))
+        })
+    })
+}
+readFile(path.resolve('./upload'))
 app.use(koaBody())
     .use(router.routes())
     .use(router.allowedMethods())
