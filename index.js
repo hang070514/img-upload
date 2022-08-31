@@ -69,7 +69,19 @@ router.post('/upload', upload.single('img'), async (ctx) => {
         message: '成功'
     }
 })
+router.post('/deletePic', async function(ctx){
+    console.log('ctx====', ctx.params, ctx.query,  ctx.request.body)
+    let params = ctx.request.body
+    let res = readFile(path.resolve('./upload'), params.fileName)
+    if (res) {
+        ctx.body = {
+            code: 200,
+            data: {},
+            msg: '删除成功'
+        }
+    }
 
+})
 router.post('/login', function(ctx){
     console.log('ctx====', ctx.params, ctx.query)
     console.log('ctx.request.body', ctx.request.body)
@@ -89,15 +101,18 @@ router.post('/login', function(ctx){
     }
 })
 
-function readFile(filePath) {
+function readFile(filePath,name) {
     fs.readdir(filePath, (err, files) => {
         files.forEach((filename) => {
             console.log('filename====', filename, path.join(filePath, filename))
-            fs.unlinkSync(path.join(filePath, filename))
+            if (filename == name) {
+                fs.unlinkSync(path.join(filePath, filename))
+                return true
+            }
+
         })
     })
 }
-readFile(path.resolve('./upload'))
 app.use(koaBody())
     .use(router.routes())
     .use(router.allowedMethods())

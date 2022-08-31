@@ -18,6 +18,9 @@ export const multipleUpload = (data) => {
     )
 }
 
+export const deleteImg = (data) => {
+  return axios.post('/deletePic', data)
+}
 export const login = (data) => {
     return axios.post('/login', data)
 }

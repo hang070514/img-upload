@@ -22,6 +22,14 @@
       <i slot="default" class="el-icon-plus"></i>
       <div slot="file" slot-scope="{file}">
         <img :src="file.url" alt="" class="el-upload-list__item-thumbnail">
+        <span class="el-upload-list__item-actions">
+               <span
+                   class="el-upload-list__item-delete"
+                   @click="handleRemove(file)"
+               >
+          <i class="el-icon-delete"></i>
+        </span>
+        </span>
       </div>
     </el-upload>
     <el-button @click="uploadPic"  type="primary">点击上传</el-button>
@@ -29,7 +37,7 @@
 </template>
 
 <script>
-import { upload, multipleUpload } from '../api/index'
+import { upload, multipleUpload, deleteImg } from '../api/index'
 export default {
   name: "pic-upload",
   data() {
@@ -68,6 +76,17 @@ export default {
       multipleUpload(formData).then((res) => {
         this.imageUrlList = res.data.url
       })
+    },
+    // 删除图片
+    handleRemove(file) {
+      console.log('file====', file)
+      deleteImg({fileName: file.name}).then(res => {
+        console.log('res====', res)
+      })
+      let ind = this.files.findIndex((item) => {
+        return item.uid === file.uid
+      })
+      this.files.splice(ind, 1)
     }
   }
 }
